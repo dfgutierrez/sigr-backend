@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+
+# JWT Configuration
+app:
+  jwt:
+    secret: mySecretKeyForJWTTokenGenerationThatShouldBeAtLeast256BitsLongForSecurityPurposes
+    expiration: 86400 # 24 horas en segundos
+
+# Logging configuration
+logging:
+  level:
+    com.sigr: DEBUG
+    org.springframework.security: DEBUG

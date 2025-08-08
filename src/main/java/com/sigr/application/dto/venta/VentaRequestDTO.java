@@ -1,0 +1,26 @@
+package com.sigr.application.dto.venta;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+public class VentaRequestDTO {
+
+    @NotNull(message = "El ID de la sede es obligatorio")
+    private Long sedeId;
+
+    // usuarioId es opcional - si no se proporciona, se usará el primer usuario activo de la sede
+    private Long usuarioId;
+
+    // fechaEntrega es opcional - si no se proporciona, se usará la fecha actual
+    private LocalDateTime fechaEntrega;
+
+    @NotEmpty(message = "Debe incluir al menos un detalle de venta")
+    @Valid
+    private List<DetalleVentaRequestDTO> detalles;
+}
