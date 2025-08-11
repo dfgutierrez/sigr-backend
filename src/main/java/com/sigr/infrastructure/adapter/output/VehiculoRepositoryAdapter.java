@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,5 +71,10 @@ public class VehiculoRepositoryAdapter implements VehiculoRepositoryPort {
     @Override
     public List<Vehiculo> findBySedeId(Long sedeId) {
         return vehiculoRepository.findBySedeId(sedeId);
+    }
+
+    @Override
+    public Long countVehiculosNuevosEnPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return vehiculoRepository.countVehiculosNuevosEnPeriodo(fechaInicio, fechaFin);
     }
 }

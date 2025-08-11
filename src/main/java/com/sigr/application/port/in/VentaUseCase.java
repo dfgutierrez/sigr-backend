@@ -18,6 +18,8 @@ public interface VentaUseCase {
     
     Page<VentaResponseDTO> obtenerVentasPorSede(Long sedeId, Pageable pageable);
     
+    Page<VentaResponseDTO> obtenerVentasPorSedeYFecha(Long sedeId, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
+    
     Page<VentaResponseDTO> obtenerVentasPorFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
     
     Page<VentaResponseDTO> obtenerVentasPorUsuario(Long usuarioId, Pageable pageable);
@@ -27,4 +29,10 @@ public interface VentaUseCase {
     void anularVenta(Long id);
     
     List<VentaResponseDTO> obtenerVentasDelDia(Long sedeId);
+    
+    Page<VentaResponseDTO> obtenerVentasPendientesPorEntregar(Pageable pageable);
+    
+    Page<VentaResponseDTO> obtenerVentasPendientesPorEntregarPorSede(Long sedeId, Pageable pageable);
+    
+    VentaResponseDTO actualizarFechaEntrega(Long id, LocalDateTime nuevaFechaEntrega);
 }

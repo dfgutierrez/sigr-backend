@@ -1,5 +1,6 @@
 package com.sigr.application.port.output;
 
+import com.sigr.application.dto.dashboard.DashboardResponseDTO;
 import com.sigr.application.dto.reporte.ProductoStockBajoDTO;
 import com.sigr.domain.entity.Inventario;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,6 @@ public interface InventarioRepositoryPort {
     BigDecimal calcularValorTotalInventario(Long sedeId);
 
     List<ProductoStockBajoDTO> findProductosConStockBajo(Long sedeId);
+    
+    DashboardResponseDTO.KpisDTO.InventarioDTO obtenerKpiInventario(Long sedeId);
 }

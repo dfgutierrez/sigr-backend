@@ -1,5 +1,6 @@
 package com.sigr.application.port.output;
 
+import com.sigr.application.dto.dashboard.DashboardResponseDTO;
 import com.sigr.domain.entity.Sede;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,6 @@ public interface SedeRepositoryPort {
     long countVehiculosBySedeId(Long sedeId);
     
     long countInventarioBySedeId(Long sedeId);
+    
+    List<DashboardResponseDTO.ProductosPorSedeDTO> obtenerProductosPorSede();
 }

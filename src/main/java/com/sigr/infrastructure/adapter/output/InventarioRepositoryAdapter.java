@@ -1,5 +1,6 @@
 package com.sigr.infrastructure.adapter.output;
 
+import com.sigr.application.dto.dashboard.DashboardResponseDTO;
 import com.sigr.application.dto.reporte.ProductoStockBajoDTO;
 import com.sigr.application.port.output.InventarioRepositoryPort;
 import com.sigr.domain.entity.Inventario;
@@ -97,5 +98,10 @@ public class InventarioRepositoryAdapter implements InventarioRepositoryPort {
     @Override
     public List<ProductoStockBajoDTO> findProductosConStockBajo(Long sedeId) {
         return inventarioRepository.findProductosConStockBajo(sedeId);
+    }
+
+    @Override
+    public DashboardResponseDTO.KpisDTO.InventarioDTO obtenerKpiInventario(Long sedeId) {
+        return inventarioRepository.obtenerKpiInventario(sedeId);
     }
 }

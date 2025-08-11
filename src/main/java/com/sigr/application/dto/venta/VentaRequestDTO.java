@@ -17,7 +17,7 @@ public class VentaRequestDTO {
     // usuarioId es opcional - si no se proporciona, se usará el primer usuario activo de la sede
     private Long usuarioId;
 
-    // fechaEntrega es opcional - si no se proporciona, se usará la fecha actual
+    // fechaEntrega es opcional - puede ser null
     private LocalDateTime fechaEntrega;
 
     @NotEmpty(message = "Debe incluir al menos un detalle de venta")

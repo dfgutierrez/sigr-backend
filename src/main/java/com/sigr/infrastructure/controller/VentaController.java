@@ -61,12 +61,23 @@ public class VentaController {
 
 
     @GetMapping("/sede/{sedeId}")
-    @Operation(summary = "Obtener ventas por sede", description = "Obtiene las ventas de una sede específica")
+    @Operation(summary = "Obtener ventas por sede", description = "Obtiene las ventas de una sede específica con filtros opcionales de fecha")
     @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasBySede(
-            @Parameter(description = "ID de la sede") @PathVariable Long sedeId, 
+            @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
+            @Parameter(description = "Fecha desde (opcional)", example = "2024-01-01T00:00:00")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaDesde,
+            @Parameter(description = "Fecha hasta (opcional)", example = "2024-01-31T23:59:59")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaHasta,
             Pageable pageable) {
-        Page<VentaResponseDTO> ventasPage = ventaUseCase.obtenerVentasPorSede(sedeId, pageable);
+        
+        Page<VentaResponseDTO> ventasPage;
+        if (fechaDesde != null && fechaHasta != null) {
+            ventasPage = ventaUseCase.obtenerVentasPorSedeYFecha(sedeId, fechaDesde, fechaHasta, pageable);
+        } else {
+            ventasPage = ventaUseCase.obtenerVentasPorSede(sedeId, pageable);
+        }
+        
         PagedResponse<VentaResponseDTO> pagedResponse = PagedResponse.of(ventasPage);
         return ResponseEntity.ok(ApiResponse.success(pagedResponse));
     }
@@ -112,5 +123,37 @@ public class VentaController {
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
         List<VentaResponseDTO> ventas = ventaUseCase.obtenerVentasDelDia(sedeId);
         return ResponseEntity.ok(ApiResponse.success(ventas));
+    }
+
+    @GetMapping("/pendientes-por-entregar")
+    @Operation(summary = "Obtener ventas pendientes por entregar", description = "Obtiene todas las ventas que están pendientes por entregar")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasPendientesPorEntregar(
+            Pageable pageable) {
+        Page<VentaResponseDTO> ventasPage = ventaUseCase.obtenerVentasPendientesPorEntregar(pageable);
+        PagedResponse<VentaResponseDTO> pagedResponse = PagedResponse.of(ventasPage);
+        return ResponseEntity.ok(ApiResponse.success(pagedResponse));
+    }
+
+    @GetMapping("/sede/{sedeId}/pendientes-por-entregar")
+    @Operation(summary = "Obtener ventas pendientes por entregar por sede", description = "Obtiene las ventas pendientes por entregar de una sede específica")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasPendientesPorEntregarPorSede(
+            @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
+            Pageable pageable) {
+        Page<VentaResponseDTO> ventasPage = ventaUseCase.obtenerVentasPendientesPorEntregarPorSede(sedeId, pageable);
+        PagedResponse<VentaResponseDTO> pagedResponse = PagedResponse.of(ventasPage);
+        return ResponseEntity.ok(ApiResponse.success(pagedResponse));
+    }
+
+    @PatchMapping("/{id}/fecha-entrega")
+    @Operation(summary = "Actualizar fecha de entrega", description = "Actualiza la fecha de entrega de una venta")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    public ResponseEntity<ApiResponse<VentaResponseDTO>> actualizarFechaEntrega(
+            @Parameter(description = "ID de la venta") @PathVariable Long id,
+            @Parameter(description = "Nueva fecha de entrega", example = "2024-12-31T23:59:59")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaEntrega) {
+        VentaResponseDTO venta = ventaUseCase.actualizarFechaEntrega(id, fechaEntrega);
+        return ResponseEntity.ok(ApiResponse.success(venta));
     }
 }

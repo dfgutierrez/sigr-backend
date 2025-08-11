@@ -128,6 +128,12 @@ public class VentaServiceImpl implements VentaUseCase {
     }
 
     @Override
+    public Page<VentaResponseDTO> obtenerVentasPorSedeYFecha(Long sedeId, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+        return ventaRepositoryPort.findBySedeIdAndFechaBetween(sedeId, fechaInicio, fechaFin, pageable)
+                .map(this::mapToResponseDTO);
+    }
+
+    @Override
     public Page<VentaResponseDTO> obtenerVentasPorFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
         return ventaRepositoryPort.findByFechaBetween(fechaInicio, fechaFin, pageable)
                 .map(this::mapToResponseDTO);
@@ -175,6 +181,36 @@ public class VentaServiceImpl implements VentaUseCase {
                 .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<VentaResponseDTO> obtenerVentasPendientesPorEntregar(Pageable pageable) {
+        LocalDateTime fechaActual = LocalDateTime.now();
+        return ventaRepositoryPort.findByEstadoTrueAndFechaEntregaAfter(fechaActual, pageable)
+                .map(this::mapToResponseDTO);
+    }
+
+    @Override
+    public Page<VentaResponseDTO> obtenerVentasPendientesPorEntregarPorSede(Long sedeId, Pageable pageable) {
+        LocalDateTime fechaActual = LocalDateTime.now();
+        return ventaRepositoryPort.findBySedeIdAndEstadoTrueAndFechaEntregaAfter(sedeId, fechaActual, pageable)
+                .map(this::mapToResponseDTO);
+    }
+
+    @Override
+    @Transactional
+    public VentaResponseDTO actualizarFechaEntrega(Long id, LocalDateTime nuevaFechaEntrega) {
+        Venta venta = ventaRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada"));
+        
+        if (!venta.getEstado()) {
+            throw new BusinessException("No se puede modificar la fecha de entrega de una venta anulada");
+        }
+        
+        venta.setFechaEntrega(nuevaFechaEntrega);
+        Venta ventaActualizada = ventaRepositoryPort.save(venta);
+        
+        return mapToResponseDTO(ventaActualizada);
     }
 
     private VentaResponseDTO mapToResponseDTO(Venta venta) {

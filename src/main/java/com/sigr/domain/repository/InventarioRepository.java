@@ -1,5 +1,6 @@
 package com.sigr.domain.repository;
 
+import com.sigr.application.dto.dashboard.DashboardResponseDTO;
 import com.sigr.application.dto.reporte.ProductoStockBajoDTO;
 import com.sigr.domain.entity.Inventario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,4 +52,14 @@ public interface InventarioRepository extends JpaRepository<Inventario, Long> {
         ORDER BY i.cantidad ASC
         """)
     List<ProductoStockBajoDTO> findProductosConStockBajo(@Param("sedeId") Long sedeId);
+
+    @Query("""
+        SELECT new com.sigr.application.dto.dashboard.DashboardResponseDTO$KpisDTO$InventarioDTO(
+            COUNT(CASE WHEN i.cantidad > 0 THEN 1 END),
+            COUNT(i)
+        )
+        FROM Inventario i 
+        WHERE i.sede.id = :sedeId
+        """)
+    DashboardResponseDTO.KpisDTO.InventarioDTO obtenerKpiInventario(@Param("sedeId") Long sedeId);
 }

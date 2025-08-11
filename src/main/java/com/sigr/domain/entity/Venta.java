@@ -48,9 +48,6 @@ public class Venta {
     @PrePersist
     protected void onCreate() {
         fecha = LocalDateTime.now();
-        if (fechaEntrega == null) {
-            fechaEntrega = LocalDateTime.now();
-        }
         if (estado == null) {
             estado = true;
         }

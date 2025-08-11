@@ -1,5 +1,6 @@
 package com.sigr.infrastructure.adapter.output;
 
+import com.sigr.application.dto.dashboard.DashboardResponseDTO;
 import com.sigr.application.port.output.SedeRepositoryPort;
 import com.sigr.domain.entity.Sede;
 import com.sigr.domain.repository.SedeRepository;
@@ -65,5 +66,10 @@ public class SedeRepositoryAdapter implements SedeRepositoryPort {
     @Override
     public long countInventarioBySedeId(Long sedeId) {
         return sedeRepository.countInventarioBySedeId(sedeId);
+    }
+
+    @Override
+    public List<DashboardResponseDTO.ProductosPorSedeDTO> obtenerProductosPorSede() {
+        return sedeRepository.obtenerProductosPorSede();
     }
 }
