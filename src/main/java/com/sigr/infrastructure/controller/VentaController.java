@@ -34,7 +34,7 @@ public class VentaController {
 
     @GetMapping
     @Operation(summary = "Obtener todas las ventas paginadas", description = "Retorna una página de ventas con parámetros de paginación")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getAllVentas(Pageable pageable) {
         Page<VentaResponseDTO> ventasPage = ventaUseCase.obtenerTodasLasVentas(pageable);
         PagedResponse<VentaResponseDTO> pagedResponse = PagedResponse.of(ventasPage);
@@ -43,7 +43,7 @@ public class VentaController {
 
     @PostMapping
     @Operation(summary = "Crear nueva venta", description = "Crea una nueva venta en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<VentaResponseDTO>> createVenta(
             @Valid @RequestBody VentaRequestDTO request) {
         VentaResponseDTO venta = ventaUseCase.crearVenta(request);
@@ -52,7 +52,7 @@ public class VentaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener venta por ID", description = "Retorna una venta específica por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<VentaResponseDTO>> getVentaById(
             @Parameter(description = "ID de la venta") @PathVariable Long id) {
         VentaResponseDTO venta = ventaUseCase.obtenerVentaPorId(id);
@@ -62,7 +62,7 @@ public class VentaController {
 
     @GetMapping("/sede/{sedeId}")
     @Operation(summary = "Obtener ventas por sede", description = "Obtiene las ventas de una sede específica con filtros opcionales de fecha")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasBySede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
             @Parameter(description = "Fecha desde (opcional)", example = "2024-01-01T00:00:00")
@@ -84,7 +84,7 @@ public class VentaController {
 
     @GetMapping("/fecha")
     @Operation(summary = "Obtener ventas por rango de fechas", description = "Obtiene las ventas en un rango de fechas")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasByFecha(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -98,7 +98,7 @@ public class VentaController {
 
     @GetMapping("/usuario/{usuarioId}")
     @Operation(summary = "Obtener ventas por usuario", description = "Obtiene las ventas realizadas por un usuario")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasByUsuario(
             @Parameter(description = "ID del usuario") @PathVariable Long usuarioId, 
             Pageable pageable) {
@@ -109,7 +109,7 @@ public class VentaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Anular venta", description = "Anula una venta del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteVenta(
             @Parameter(description = "ID de la venta") @PathVariable Long id) {
         ventaUseCase.anularVenta(id);
@@ -118,7 +118,7 @@ public class VentaController {
 
     @GetMapping("/sede/{sedeId}/hoy")
     @Operation(summary = "Obtener ventas del día", description = "Obtiene las ventas del día actual de una sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<VentaResponseDTO>>> getVentasDelDia(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
         List<VentaResponseDTO> ventas = ventaUseCase.obtenerVentasDelDia(sedeId);
@@ -127,7 +127,7 @@ public class VentaController {
 
     @GetMapping("/pendientes-por-entregar")
     @Operation(summary = "Obtener ventas pendientes por entregar", description = "Obtiene todas las ventas que están pendientes por entregar")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasPendientesPorEntregar(
             Pageable pageable) {
         Page<VentaResponseDTO> ventasPage = ventaUseCase.obtenerVentasPendientesPorEntregar(pageable);
@@ -137,7 +137,7 @@ public class VentaController {
 
     @GetMapping("/sede/{sedeId}/pendientes-por-entregar")
     @Operation(summary = "Obtener ventas pendientes por entregar por sede", description = "Obtiene las ventas pendientes por entregar de una sede específica")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<VentaResponseDTO>>> getVentasPendientesPorEntregarPorSede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
             Pageable pageable) {
@@ -148,7 +148,7 @@ public class VentaController {
 
     @PatchMapping("/{id}/fecha-entrega")
     @Operation(summary = "Actualizar fecha de entrega", description = "Actualiza la fecha de entrega de una venta")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<VentaResponseDTO>> actualizarFechaEntrega(
             @Parameter(description = "ID de la venta") @PathVariable Long id,
             @Parameter(description = "Nueva fecha de entrega", example = "2024-12-31T23:59:59")

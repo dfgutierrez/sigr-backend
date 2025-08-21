@@ -24,7 +24,7 @@ public class DashboardController {
     @GetMapping
     @Operation(summary = "Obtener datos del dashboard global", 
                description = "Retorna datos estadísticos para el dashboard: productos vendidos del mes/día por sede, vehículos nuevos del día y productos por sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<DashboardResponseDTO>> getDashboardData() {
         DashboardResponseDTO dashboardData = dashboardUseCase.obtenerDatosDashboard();
         return ResponseEntity.ok(ApiResponse.success(dashboardData));
@@ -33,7 +33,7 @@ public class DashboardController {
     @GetMapping("/sede/{sedeId}")
     @Operation(summary = "Obtener datos del dashboard por sede", 
                description = "Retorna datos estadísticos del dashboard filtrados por una sede específica")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<DashboardResponseDTO>> getDashboardDataBySede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
         DashboardResponseDTO dashboardData = dashboardUseCase.obtenerDatosDashboardPorSede(sedeId);

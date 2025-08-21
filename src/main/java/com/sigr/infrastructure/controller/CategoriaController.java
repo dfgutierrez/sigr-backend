@@ -38,7 +38,7 @@ public class CategoriaController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<CategoriaResponseDTO>>> getAllCategorias() {
         List<CategoriaResponseDTO> categorias = categoriaUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(categorias));
@@ -46,7 +46,7 @@ public class CategoriaController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener categorías paginadas", description = "Retorna una página de categorías")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<CategoriaResponseDTO>>> getAllCategoriasPaginated(Pageable pageable) {
         Page<CategoriaResponseDTO> categoriasPage = categoriaUseCase.findAllPaginated(pageable);
         PagedResponse<CategoriaResponseDTO> pagedResponse = PagedResponse.of(categoriasPage);
@@ -55,7 +55,7 @@ public class CategoriaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener categoría por ID", description = "Retorna una categoría específica por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<CategoriaResponseDTO>> getCategoriaById(
             @Parameter(description = "ID de la categoría") @PathVariable Long id) {
         CategoriaResponseDTO categoria = categoriaUseCase.findById(id);
@@ -64,7 +64,7 @@ public class CategoriaController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar categorías por nombre", description = "Busca categorías que contengan el texto especificado en el nombre")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<CategoriaResponseDTO>>> searchCategoriasByNombre(
             @Parameter(description = "Texto a buscar en el nombre") @RequestParam String nombre) {
         List<CategoriaResponseDTO> categorias = categoriaUseCase.findByNombreContaining(nombre);
@@ -73,7 +73,7 @@ public class CategoriaController {
 
     @PostMapping
     @Operation(summary = "Crear nueva categoría", description = "Crea una nueva categoría en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<CategoriaResponseDTO>> createCategoria(
             @Valid @RequestBody CategoriaRequestDTO request) {
         CategoriaResponseDTO categoria = categoriaUseCase.create(request);
@@ -82,7 +82,7 @@ public class CategoriaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar categoría", description = "Actualiza una categoría existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<CategoriaResponseDTO>> updateCategoria(
             @Parameter(description = "ID de la categoría") @PathVariable Long id,
             @Valid @RequestBody CategoriaUpdateDTO request) {
@@ -92,7 +92,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar categoría", description = "Elimina una categoría del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteCategoria(
             @Parameter(description = "ID de la categoría") @PathVariable Long id) {
         categoriaUseCase.deleteById(id);
@@ -101,7 +101,7 @@ public class CategoriaController {
 
     @GetMapping("/exists/{id}")
     @Operation(summary = "Verificar si existe categoría", description = "Verifica si existe una categoría con el ID especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsById(
             @Parameter(description = "ID de la categoría") @PathVariable Long id) {
         boolean exists = categoriaUseCase.existsById(id);
@@ -110,7 +110,7 @@ public class CategoriaController {
 
     @GetMapping("/exists-nombre")
     @Operation(summary = "Verificar si existe nombre", description = "Verifica si existe una categoría con el nombre especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByNombre(
             @Parameter(description = "Nombre de la categoría") @RequestParam String nombre) {
         boolean exists = categoriaUseCase.existsByNombre(nombre);
@@ -119,7 +119,7 @@ public class CategoriaController {
 
     @GetMapping("/{id}/productos-count")
     @Operation(summary = "Contar productos por categoría", description = "Retorna la cantidad de productos asociados a una categoría")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Long>> countProductosByCategoria(
             @Parameter(description = "ID de la categoría") @PathVariable Long id) {
         long count = categoriaUseCase.countProductosByCategoriaId(id);

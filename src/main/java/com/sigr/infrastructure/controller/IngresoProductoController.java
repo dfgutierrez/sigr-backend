@@ -39,7 +39,7 @@ public class IngresoProductoController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<IngresoProductoResponseDTO>>> getAllIngresos() {
         List<IngresoProductoResponseDTO> ingresos = ingresoProductoUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(ingresos));
@@ -47,7 +47,7 @@ public class IngresoProductoController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener ingresos paginados", description = "Retorna una página de ingresos de productos")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<IngresoProductoResponseDTO>>> getAllIngresosPaginated(Pageable pageable) {
         Page<IngresoProductoResponseDTO> ingresosPage = ingresoProductoUseCase.findAllPaginated(pageable);
         PagedResponse<IngresoProductoResponseDTO> pagedResponse = PagedResponse.of(ingresosPage);
@@ -56,7 +56,7 @@ public class IngresoProductoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener ingreso por ID", description = "Retorna un ingreso específico por su ID con todos sus detalles")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<IngresoProductoResponseDTO>> getIngresoById(
             @Parameter(description = "ID del ingreso") @PathVariable Long id) {
         IngresoProductoResponseDTO ingreso = ingresoProductoUseCase.findById(id);
@@ -65,7 +65,7 @@ public class IngresoProductoController {
 
     @GetMapping("/sede/{sedeId}")
     @Operation(summary = "Obtener ingresos por sede", description = "Retorna todos los ingresos de una sede específica")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<IngresoProductoResponseDTO>>> getIngresosBySede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
         List<IngresoProductoResponseDTO> ingresos = ingresoProductoUseCase.findBySedeId(sedeId);
@@ -74,7 +74,7 @@ public class IngresoProductoController {
 
     @GetMapping("/usuario/{usuarioId}")
     @Operation(summary = "Obtener ingresos por usuario", description = "Retorna todos los ingresos realizados por un usuario")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<IngresoProductoResponseDTO>>> getIngresosByUsuario(
             @Parameter(description = "ID del usuario") @PathVariable Long usuarioId) {
         List<IngresoProductoResponseDTO> ingresos = ingresoProductoUseCase.findByUsuarioId(usuarioId);
@@ -83,7 +83,7 @@ public class IngresoProductoController {
 
     @GetMapping("/fecha-range")
     @Operation(summary = "Obtener ingresos por rango de fechas", description = "Retorna ingresos realizados entre dos fechas")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<IngresoProductoResponseDTO>>> getIngresosByFechaRange(
             @Parameter(description = "Fecha inicio (formato: yyyy-MM-dd'T'HH:mm:ss)") 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -95,7 +95,7 @@ public class IngresoProductoController {
 
     @GetMapping("/sede/{sedeId}/fecha-range")
     @Operation(summary = "Obtener ingresos por sede y rango de fechas", description = "Retorna ingresos de una sede en un rango de fechas")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<IngresoProductoResponseDTO>>> getIngresosBySedeAndFechaRange(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
             @Parameter(description = "Fecha inicio (formato: yyyy-MM-dd'T'HH:mm:ss)") 
@@ -108,7 +108,7 @@ public class IngresoProductoController {
 
     @PostMapping
     @Operation(summary = "Crear nuevo ingreso de productos", description = "Registra un nuevo ingreso de productos al inventario")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<IngresoProductoResponseDTO>> createIngreso(
             @Valid @RequestBody IngresoProductoRequestDTO request) {
         IngresoProductoResponseDTO ingreso = ingresoProductoUseCase.create(request);
@@ -117,7 +117,7 @@ public class IngresoProductoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar ingreso", description = "Elimina un registro de ingreso (solo para administradores)")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteIngreso(
             @Parameter(description = "ID del ingreso") @PathVariable Long id) {
         ingresoProductoUseCase.deleteById(id);

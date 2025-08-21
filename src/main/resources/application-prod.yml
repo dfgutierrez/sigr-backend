@@ -3,13 +3,23 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/sigrdb
+    url: jdbc:postgresql://db:5432/sigr_db
     username: sigr_user
     password: sigr_pass
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# JWT Configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySecretKeyForJWTTokenGenerationThatShouldBeAtLeast256BitsLongForSecurityPurposes}
+    expiration: 86400
+
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ORIGINS:https://sigr.com.co,http://localhost:3000}

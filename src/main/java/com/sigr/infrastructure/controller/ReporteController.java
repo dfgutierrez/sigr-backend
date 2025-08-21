@@ -33,7 +33,7 @@ public class ReporteController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<ReporteVentasDTO>> generarReporteVentas(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -47,7 +47,7 @@ public class ReporteController {
 
     @GetMapping("/inventario")
     @Operation(summary = "Generar reporte de inventario", description = "Genera un reporte del estado del inventario por sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<ReporteInventarioDTO>> generarReporteInventario(
             @Parameter(description = "ID de la sede")
             @RequestParam Long sedeId) {
@@ -57,7 +57,7 @@ public class ReporteController {
 
     @GetMapping("/movimientos")
     @Operation(summary = "Generar reporte de movimientos", description = "Genera un reporte de movimientos (ingresos y ventas) por período")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<ReporteMovimientosDTO>> generarReporteMovimientos(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -71,7 +71,7 @@ public class ReporteController {
 
     @GetMapping("/productos-mas-vendidos")
     @Operation(summary = "Obtener productos más vendidos", description = "Obtiene los productos más vendidos por período y sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<ProductoMasVendidoDTO>>> obtenerProductosMasVendidos(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -87,7 +87,7 @@ public class ReporteController {
 
     @GetMapping("/productos-stock-bajo")
     @Operation(summary = "Obtener productos con stock bajo", description = "Obtiene los productos con stock bajo por sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<ProductoStockBajoDTO>>> obtenerProductosConStockBajo(
             @Parameter(description = "ID de la sede")
             @RequestParam Long sedeId) {
@@ -97,7 +97,7 @@ public class ReporteController {
 
     @GetMapping("/ventas/usuario/{usuarioId}")
     @Operation(summary = "Generar reporte de ventas por usuario", description = "Genera un reporte de ventas de un usuario específico")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<ReporteVentasDTO>> generarReporteVentasPorUsuario(
             @Parameter(description = "ID del usuario") @PathVariable Long usuarioId,
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
@@ -110,7 +110,7 @@ public class ReporteController {
 
     @GetMapping("/ventas/comparativo-sedes")
     @Operation(summary = "Generar reporte comparativo de sedes", description = "Genera un reporte comparativo de ventas entre todas las sedes")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<ReporteVentasDTO>>> generarReporteComparativoSedes(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -122,7 +122,7 @@ public class ReporteController {
 
     @GetMapping("/usuarios/rendimiento")
     @Operation(summary = "Generar reporte de rendimiento de usuarios", description = "Genera un reporte del rendimiento de los usuarios en ventas")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<ReporteUsuariosDTO>>> generarReporteRendimientoUsuarios(
             @Parameter(description = "Fecha de inicio", example = "2024-01-01T00:00:00")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -136,7 +136,7 @@ public class ReporteController {
 
     @GetMapping("/inventario/completo")
     @Operation(summary = "Generar reporte completo de inventario", description = "Genera un reporte completo del inventario de todas las sedes")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<ReporteInventarioDTO>> generarReporteInventarioCompleto() {
         ReporteInventarioDTO reporte = reporteUseCase.generarReporteInventarioCompleto();
         return ResponseEntity.ok(ApiResponse.success(reporte));

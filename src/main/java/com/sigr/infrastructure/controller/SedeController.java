@@ -63,7 +63,7 @@ public class SedeController {
 
     @PostMapping
     @Operation(summary = "Crear nueva sede", description = "Crea una nueva sede en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<SedeResponseDTO>> createSede(
             @Valid @RequestBody SedeRequestDTO request) {
         SedeResponseDTO sede = sedeUseCase.create(request);
@@ -72,7 +72,7 @@ public class SedeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar sede", description = "Actualiza una sede existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<SedeResponseDTO>> updateSede(
             @Parameter(description = "ID de la sede") @PathVariable Long id,
             @Valid @RequestBody SedeRequestDTO request) {
@@ -82,7 +82,7 @@ public class SedeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar sede", description = "Elimina una sede del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteSede(
             @Parameter(description = "ID de la sede") @PathVariable Long id) {
         sedeUseCase.deleteById(id);
@@ -91,7 +91,7 @@ public class SedeController {
 
     @GetMapping("/exists")
     @Operation(summary = "Verificar si existe una sede", description = "Verifica si existe una sede con el nombre especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByNombre(
             @Parameter(description = "Nombre de la sede") @RequestParam String nombre) {
         boolean exists = sedeUseCase.existsByNombre(nombre);
@@ -100,7 +100,7 @@ public class SedeController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar sedes por nombre", description = "Busca sedes que contengan el texto especificado en el nombre")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'MECANICO', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<SedeResponseDTO>>> searchSedesByNombre(
             @Parameter(description = "Texto a buscar en el nombre") @RequestParam String nombre) {
         List<SedeResponseDTO> sedes = sedeUseCase.findByNombreContaining(nombre);

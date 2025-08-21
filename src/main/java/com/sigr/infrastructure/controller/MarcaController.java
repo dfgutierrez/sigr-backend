@@ -38,7 +38,7 @@ public class MarcaController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<MarcaResponseDTO>>> getAllMarcas() {
         List<MarcaResponseDTO> marcas = marcaUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(marcas));
@@ -46,7 +46,7 @@ public class MarcaController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener marcas paginadas", description = "Retorna una página de marcas")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<MarcaResponseDTO>>> getAllMarcasPaginated(Pageable pageable) {
         Page<MarcaResponseDTO> marcasPage = marcaUseCase.findAllPaginated(pageable);
         PagedResponse<MarcaResponseDTO> pagedResponse = PagedResponse.of(marcasPage);
@@ -55,7 +55,7 @@ public class MarcaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener marca por ID", description = "Retorna una marca específica por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<MarcaResponseDTO>> getMarcaById(
             @Parameter(description = "ID de la marca") @PathVariable Long id) {
         MarcaResponseDTO marca = marcaUseCase.findById(id);
@@ -64,7 +64,7 @@ public class MarcaController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar marcas por nombre", description = "Busca marcas que contengan el texto especificado en el nombre")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<MarcaResponseDTO>>> searchMarcasByNombre(
             @Parameter(description = "Texto a buscar en el nombre") @RequestParam String nombre) {
         List<MarcaResponseDTO> marcas = marcaUseCase.findByNombreContaining(nombre);
@@ -73,7 +73,7 @@ public class MarcaController {
 
     @PostMapping
     @Operation(summary = "Crear nueva marca", description = "Crea una nueva marca en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<MarcaResponseDTO>> createMarca(
             @Valid @RequestBody MarcaRequestDTO request) {
         MarcaResponseDTO marca = marcaUseCase.create(request);
@@ -82,7 +82,7 @@ public class MarcaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar marca", description = "Actualiza una marca existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<MarcaResponseDTO>> updateMarca(
             @Parameter(description = "ID de la marca") @PathVariable Long id,
             @Valid @RequestBody MarcaUpdateDTO request) {
@@ -92,7 +92,7 @@ public class MarcaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar marca", description = "Elimina una marca del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteMarca(
             @Parameter(description = "ID de la marca") @PathVariable Long id) {
         marcaUseCase.deleteById(id);
@@ -101,7 +101,7 @@ public class MarcaController {
 
     @GetMapping("/exists/{id}")
     @Operation(summary = "Verificar si existe marca", description = "Verifica si existe una marca con el ID especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsById(
             @Parameter(description = "ID de la marca") @PathVariable Long id) {
         boolean exists = marcaUseCase.existsById(id);
@@ -110,7 +110,7 @@ public class MarcaController {
 
     @GetMapping("/exists-nombre")
     @Operation(summary = "Verificar si existe nombre", description = "Verifica si existe una marca con el nombre especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByNombre(
             @Parameter(description = "Nombre de la marca") @RequestParam String nombre) {
         boolean exists = marcaUseCase.existsByNombre(nombre);
@@ -119,7 +119,7 @@ public class MarcaController {
 
     @GetMapping("/{id}/vehiculos-count")
     @Operation(summary = "Contar vehículos por marca", description = "Retorna la cantidad de vehículos asociados a una marca")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Long>> countVehiculosByMarca(
             @Parameter(description = "ID de la marca") @PathVariable Long id) {
         long count = marcaUseCase.countVehiculosByMarcaId(id);

@@ -37,7 +37,7 @@ public class RolController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<RolResponseDTO>>> getAllRoles() {
         List<RolResponseDTO> roles = rolUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(roles));
@@ -45,7 +45,7 @@ public class RolController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener roles paginados", description = "Retorna una página de roles")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<RolResponseDTO>>> getAllRolesPaginated(Pageable pageable) {
         Page<RolResponseDTO> rolesPage = rolUseCase.findAllPaginated(pageable);
         PagedResponse<RolResponseDTO> pagedResponse = PagedResponse.of(rolesPage);
@@ -54,7 +54,7 @@ public class RolController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener rol por ID", description = "Retorna un rol específico por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<RolResponseDTO>> getRolById(
             @Parameter(description = "ID del rol") @PathVariable Long id) {
         RolResponseDTO rol = rolUseCase.findById(id);
@@ -63,7 +63,7 @@ public class RolController {
 
     @PostMapping
     @Operation(summary = "Crear nuevo rol", description = "Crea un nuevo rol en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<RolResponseDTO>> createRol(
             @Valid @RequestBody RolRequestDTO request) {
         RolResponseDTO rol = rolUseCase.create(request);
@@ -72,7 +72,7 @@ public class RolController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar rol", description = "Actualiza un rol existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<RolResponseDTO>> updateRol(
             @Parameter(description = "ID del rol") @PathVariable Long id,
             @Valid @RequestBody RolRequestDTO request) {
@@ -82,7 +82,7 @@ public class RolController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar rol", description = "Elimina un rol del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteRol(
             @Parameter(description = "ID del rol") @PathVariable Long id) {
         rolUseCase.deleteById(id);
@@ -91,7 +91,7 @@ public class RolController {
 
     @GetMapping("/exists")
     @Operation(summary = "Verificar si existe un rol", description = "Verifica si existe un rol con el nombre especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByNombre(
             @Parameter(description = "Nombre del rol") @RequestParam String nombre) {
         boolean exists = rolUseCase.existsByNombre(nombre);
@@ -100,7 +100,7 @@ public class RolController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar roles por nombre", description = "Busca roles que contengan el texto especificado en el nombre")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<RolResponseDTO>>> searchRolesByNombre(
             @Parameter(description = "Texto a buscar en el nombre") @RequestParam String nombre) {
         List<RolResponseDTO> roles = rolUseCase.findByNombreContaining(nombre);

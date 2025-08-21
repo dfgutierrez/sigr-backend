@@ -39,7 +39,7 @@ public class InventarioController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<InventarioResponseDTO>>> getAllInventarios() {
         List<InventarioResponseDTO> inventarios = inventarioUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(inventarios));
@@ -47,7 +47,7 @@ public class InventarioController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener inventarios paginados", description = "Retorna una página de inventarios")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<InventarioResponseDTO>>> getAllInventariosPaginated(Pageable pageable) {
         Page<InventarioResponseDTO> inventariosPage = inventarioUseCase.findAllPaginated(pageable);
         PagedResponse<InventarioResponseDTO> pagedResponse = PagedResponse.of(inventariosPage);
@@ -56,7 +56,7 @@ public class InventarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener inventario por ID", description = "Retorna un inventario específico por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> getInventarioById(
             @Parameter(description = "ID del inventario") @PathVariable Long id) {
         InventarioResponseDTO inventario = inventarioUseCase.findById(id);
@@ -65,7 +65,7 @@ public class InventarioController {
 
     @GetMapping("/producto/{productoId}/sede/{sedeId}")
     @Operation(summary = "Obtener inventario por producto y sede", description = "Retorna el inventario de un producto en una sede específica")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> getInventarioByProductoAndSede(
             @Parameter(description = "ID del producto") @PathVariable Long productoId,
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
@@ -75,7 +75,7 @@ public class InventarioController {
 
     @GetMapping("/sede/{sedeId}")
     @Operation(summary = "Obtener inventarios por sede", description = "Retorna todos los inventarios de una sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<InventarioResponseDTO>>> getInventariosBySede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId) {
         List<InventarioResponseDTO> inventarios = inventarioUseCase.findBySedeId(sedeId);
@@ -84,7 +84,7 @@ public class InventarioController {
 
     @GetMapping("/producto/{productoId}")
     @Operation(summary = "Obtener inventarios por producto", description = "Retorna todos los inventarios de un producto en todas las sedes")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<InventarioResponseDTO>>> getInventariosByProducto(
             @Parameter(description = "ID del producto") @PathVariable Long productoId) {
         List<InventarioResponseDTO> inventarios = inventarioUseCase.findByProductoId(productoId);
@@ -93,7 +93,7 @@ public class InventarioController {
 
     @GetMapping("/low-stock")
     @Operation(summary = "Obtener inventarios con stock bajo", description = "Retorna inventarios con cantidad menor o igual al parámetro")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<InventarioResponseDTO>>> getLowStockInventarios(
             @Parameter(description = "Cantidad límite para considerar stock bajo") @RequestParam(defaultValue = "5") Integer cantidad) {
         List<InventarioResponseDTO> inventarios = inventarioUseCase.findLowStock(cantidad);
@@ -102,7 +102,7 @@ public class InventarioController {
 
     @GetMapping("/sede/{sedeId}/low-stock")
     @Operation(summary = "Obtener inventarios con stock bajo por sede", description = "Retorna inventarios con stock bajo de una sede específica")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<InventarioResponseDTO>>> getLowStockInventariosBySede(
             @Parameter(description = "ID de la sede") @PathVariable Long sedeId,
             @Parameter(description = "Cantidad límite para considerar stock bajo") @RequestParam(defaultValue = "5") Integer cantidad) {
@@ -112,7 +112,7 @@ public class InventarioController {
 
     @PostMapping
     @Operation(summary = "Crear nuevo inventario", description = "Crea un nuevo registro de inventario")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> createInventario(
             @Valid @RequestBody InventarioRequestDTO request) {
         InventarioResponseDTO inventario = inventarioUseCase.create(request);
@@ -121,7 +121,7 @@ public class InventarioController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar inventario", description = "Actualiza un inventario existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> updateInventario(
             @Parameter(description = "ID del inventario") @PathVariable Long id,
             @Valid @RequestBody InventarioUpdateDTO request) {
@@ -131,7 +131,7 @@ public class InventarioController {
 
     @PutMapping("/{id}/adjust-stock")
     @Operation(summary = "Ajustar stock", description = "Ajusta la cantidad en inventario (puede ser positivo o negativo)")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> adjustStock(
             @Parameter(description = "ID del inventario") @PathVariable Long id,
             @Parameter(description = "Cantidad a ajustar (puede ser negativa)") @RequestParam Integer ajuste,
@@ -142,7 +142,7 @@ public class InventarioController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar inventario", description = "Elimina un registro de inventario")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteInventario(
             @Parameter(description = "ID del inventario") @PathVariable Long id) {
         inventarioUseCase.deleteById(id);
@@ -151,7 +151,7 @@ public class InventarioController {
 
     @GetMapping("/exists")
     @Operation(summary = "Verificar si existe inventario", description = "Verifica si existe un inventario para un producto en una sede")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByProductoAndSede(
             @Parameter(description = "ID del producto") @RequestParam Long productoId,
             @Parameter(description = "ID de la sede") @RequestParam Long sedeId) {
@@ -164,7 +164,7 @@ public class InventarioController {
         summary = "Descontar stock del inventario", 
         description = "Descuenta una cantidad específica del stock del inventario de una sede. Valida que el inventario pertenezca a la sede especificada y que haya suficiente stock disponible."
     )
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('EMPLEADO')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<InventarioResponseDTO>> deductStock(
             @Parameter(description = "ID del inventario") @PathVariable Long id,
             @Valid @RequestBody StockAdjustmentDTO request) {

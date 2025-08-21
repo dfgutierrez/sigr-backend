@@ -49,7 +49,7 @@ public class UsuarioController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<UsuarioResponseDTO>>> getAllUsuarios() {
         List<UsuarioResponseDTO> usuarios = usuarioUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(usuarios));
@@ -57,7 +57,7 @@ public class UsuarioController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener usuarios paginados", description = "Retorna una página de usuarios")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<UsuarioResponseDTO>>> getAllUsuariosPaginated(Pageable pageable) {
         Page<UsuarioResponseDTO> usuariosPage = usuarioUseCase.findAllPaginated(pageable);
         PagedResponse<UsuarioResponseDTO> pagedResponse = PagedResponse.of(usuariosPage);
@@ -66,7 +66,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Retorna un usuario específico por su ID")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<UsuarioResponseDTO>> getUsuarioById(
             @Parameter(description = "ID del usuario") @PathVariable Long id) {
         UsuarioResponseDTO usuario = usuarioUseCase.findById(id);
@@ -75,7 +75,7 @@ public class UsuarioController {
 
     @GetMapping("/username/{username}")
     @Operation(summary = "Obtener usuario por username", description = "Retorna un usuario específico por su username")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<UsuarioResponseDTO>> getUsuarioByUsername(
             @Parameter(description = "Username del usuario") @PathVariable String username) {
         UsuarioResponseDTO usuario = usuarioUseCase.findByUsername(username);
@@ -84,7 +84,7 @@ public class UsuarioController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Crear nuevo usuario", description = "Crea un nuevo usuario en el sistema con foto opcional")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<UsuarioResponseDTO>> createUsuario(
             @RequestParam("username") String username,
             @RequestParam("password") String password,
@@ -109,7 +109,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario (JSON)", description = "Actualiza un usuario existente usando JSON")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<UsuarioResponseDTO>> updateUsuario(
             @Parameter(description = "ID del usuario") @PathVariable Long id,
             @Valid @RequestBody UsuarioUpdateDTO request) {
@@ -119,7 +119,7 @@ public class UsuarioController {
 
     @PutMapping(value = "/{id}/with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Actualizar usuario con archivo", description = "Actualiza un usuario existente incluyendo foto de perfil")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<UsuarioResponseDTO>> updateUsuarioWithFile(
             @Parameter(description = "ID del usuario") @PathVariable Long id,
             @RequestParam(value = "username", required = false) String username,
@@ -145,7 +145,7 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteUsuario(
             @Parameter(description = "ID del usuario") @PathVariable Long id) {
         usuarioUseCase.deleteById(id);
@@ -154,7 +154,7 @@ public class UsuarioController {
 
     @GetMapping("/estado/{estado}")
     @Operation(summary = "Obtener usuarios por estado", description = "Retorna usuarios filtrados por estado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<UsuarioResponseDTO>>> getUsuariosByEstado(
             @Parameter(description = "Estado del usuario (true/false)") @PathVariable Boolean estado) {
         List<UsuarioResponseDTO> usuarios = usuarioUseCase.findByEstado(estado);
@@ -163,7 +163,7 @@ public class UsuarioController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar usuarios por nombre", description = "Busca usuarios que contengan el texto especificado en el nombre completo")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<UsuarioResponseDTO>>> searchUsuariosByNombre(
             @Parameter(description = "Texto a buscar en el nombre completo") @RequestParam String nombre) {
         List<UsuarioResponseDTO> usuarios = usuarioUseCase.findByNombreCompletoContaining(nombre);
@@ -172,7 +172,7 @@ public class UsuarioController {
 
     @GetMapping("/exists")
     @Operation(summary = "Verificar si existe un usuario", description = "Verifica si existe un usuario con el username especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByUsername(
             @Parameter(description = "Username del usuario") @RequestParam String username) {
         boolean exists = usuarioUseCase.existsByUsername(username);
@@ -181,7 +181,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}/change-password")
     @Operation(summary = "Cambiar contraseña", description = "Cambia la contraseña de un usuario")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> changePassword(
             @Parameter(description = "ID del usuario") @PathVariable Long id,
             @Valid @RequestBody ChangePasswordDTO request) {
@@ -191,7 +191,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}/toggle-estado")
     @Operation(summary = "Cambiar estado del usuario", description = "Activa o desactiva un usuario")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> toggleEstado(
             @Parameter(description = "ID del usuario") @PathVariable Long id) {
         usuarioUseCase.toggleEstado(id);
@@ -200,7 +200,7 @@ public class UsuarioController {
 
     @GetMapping("/rol/{rolId}")
     @Operation(summary = "Obtener usuarios por rol", description = "Retorna usuarios que tienen un rol específico")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<UsuarioResponseDTO>>> getUsuariosByRol(
             @Parameter(description = "ID del rol") @PathVariable Long rolId) {
         List<UsuarioResponseDTO> usuarios = usuarioUseCase.findByRolId(rolId);
@@ -209,7 +209,7 @@ public class UsuarioController {
 
     @PostMapping("/{id}/upload-photo")
     @Operation(summary = "Subir foto de usuario", description = "Sube una foto para el usuario y retorna la URL")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<String>> uploadUserPhoto(
             @Parameter(description = "ID del usuario") @PathVariable Long id,
             @Parameter(description = "Archivo de imagen") @RequestParam("photo") MultipartFile file) {
