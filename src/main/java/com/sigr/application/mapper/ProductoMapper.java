@@ -1,10 +1,14 @@
 package com.sigr.application.mapper;
 
 import com.sigr.application.dto.categoria.CategoriaResponseDTO;
+import com.sigr.application.dto.marca.MarcaResponseDTO;
 import com.sigr.application.dto.producto.ProductoRequestDTO;
 import com.sigr.application.dto.producto.ProductoResponseDTO;
+import com.sigr.application.dto.producto.ProductoSedeStockDTO;
 import com.sigr.application.dto.producto.ProductoUpdateDTO;
 import com.sigr.domain.entity.Categoria;
+import com.sigr.domain.entity.Inventario;
+import com.sigr.domain.entity.Marca;
 import com.sigr.domain.entity.Producto;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +32,20 @@ public class ProductoMapper {
             producto.setCategoria(categoria);
         }
         
+        if (dto.getMarcaId() != null) {
+            Marca marca = new Marca();
+            marca.setId(dto.getMarcaId());
+            producto.setMarca(marca);
+        }
+        
         return producto;
     }
 
     public ProductoResponseDTO toResponseDTO(Producto producto) {
+        return toResponseDTO(producto, null);
+    }
+
+    public ProductoResponseDTO toResponseDTO(Producto producto, List<Inventario> inventarios) {
         ProductoResponseDTO dto = new ProductoResponseDTO();
         dto.setId(producto.getId());
         dto.setCodigoBarra(producto.getCodigoBarra());
@@ -48,7 +62,31 @@ public class ProductoMapper {
             dto.setCategoriaId(producto.getCategoria().getId());
         }
         
+        if (producto.getMarca() != null) {
+            MarcaResponseDTO marcaDto = new MarcaResponseDTO();
+            marcaDto.setId(producto.getMarca().getId());
+            marcaDto.setNombre(producto.getMarca().getNombre());
+            dto.setMarca(marcaDto);
+            dto.setMarcaId(producto.getMarca().getId());
+        }
+        
+        if (inventarios != null) {
+            List<ProductoSedeStockDTO> sedesDto = inventarios.stream()
+                .map(this::toSedeStockDTO)
+                .collect(Collectors.toList());
+            dto.setSedes(sedesDto);
+        }
+        
         return dto;
+    }
+
+    private ProductoSedeStockDTO toSedeStockDTO(Inventario inventario) {
+        return ProductoSedeStockDTO.builder()
+            .sedeId(inventario.getSede().getId())
+            .sedeNombre(inventario.getSede().getNombre())
+            .stock(inventario.getCantidad())
+            .tieneStock(inventario.getCantidad() > 0)
+            .build();
     }
 
     public List<ProductoResponseDTO> toResponseDTOList(List<Producto> productos) {

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,7 +42,28 @@ public class ProductoServiceImpl implements ProductoUseCase {
     public List<ProductoResponseDTO> findAll() {
         log.debug("Finding all productos");
         List<Producto> productos = productoRepositoryPort.findAll();
-        return productoMapper.toResponseDTOList(productos);
+        return productos.stream()
+            .map(producto -> {
+                List<Inventario> inventarios = inventarioRepositoryPort.findByProductoIdWithStock(producto.getId());
+                return productoMapper.toResponseDTO(producto, inventarios);
+            })
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductoResponseDTO> findAll(Long sedeId) {
+        if (sedeId == null) {
+            return findAll();
+        }
+        
+        log.debug("Finding productos by sede: {}", sedeId);
+        List<Producto> productos = productoRepositoryPort.findBySedeId(sedeId);
+        return productos.stream()
+            .map(producto -> {
+                List<Inventario> inventarios = inventarioRepositoryPort.findByProductoIdWithStock(producto.getId());
+                return productoMapper.toResponseDTO(producto, inventarios);
+            })
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -49,7 +71,10 @@ public class ProductoServiceImpl implements ProductoUseCase {
         log.debug("Finding all productos paginated with page: {}, size: {}", 
                  pageable.getPageNumber(), pageable.getPageSize());
         Page<Producto> productosPage = productoRepositoryPort.findAllPaginated(pageable);
-        return productosPage.map(productoMapper::toResponseDTO);
+        return productosPage.map(producto -> {
+            List<Inventario> inventarios = inventarioRepositoryPort.findByProductoIdWithStock(producto.getId());
+            return productoMapper.toResponseDTO(producto, inventarios);
+        });
     }
 
     @Override
@@ -57,7 +82,8 @@ public class ProductoServiceImpl implements ProductoUseCase {
         log.debug("Finding producto by id: {}", id);
         Producto producto = productoRepositoryPort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
-        return productoMapper.toResponseDTO(producto);
+        List<Inventario> inventarios = inventarioRepositoryPort.findByProductoIdWithStock(producto.getId());
+        return productoMapper.toResponseDTO(producto, inventarios);
     }
 
     @Override

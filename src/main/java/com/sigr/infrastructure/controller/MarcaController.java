@@ -73,7 +73,7 @@ public class MarcaController {
 
     @PostMapping
     @Operation(summary = "Crear nueva marca", description = "Crea una nueva marca en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<MarcaResponseDTO>> createMarca(
             @Valid @RequestBody MarcaRequestDTO request) {
         MarcaResponseDTO marca = marcaUseCase.create(request);
@@ -82,7 +82,7 @@ public class MarcaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar marca", description = "Actualiza una marca existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<MarcaResponseDTO>> updateMarca(
             @Parameter(description = "ID de la marca") @PathVariable Long id,
             @Valid @RequestBody MarcaUpdateDTO request) {
@@ -92,7 +92,7 @@ public class MarcaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar marca", description = "Elimina una marca del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteMarca(
             @Parameter(description = "ID de la marca") @PathVariable Long id) {
         marcaUseCase.deleteById(id);

@@ -58,7 +58,7 @@ public class VehiculoController {
 
     @PostMapping
     @Operation(summary = "Crear nuevo vehículo", description = "Crea un nuevo vehículo en el sistema")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<VehiculoResponseDTO>> createVehiculo(
             @Valid @RequestBody VehiculoRequestDTO request) {
         VehiculoResponseDTO vehiculo = vehiculoUseCase.create(request);
@@ -68,7 +68,7 @@ public class VehiculoController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar vehículo", description = "Actualiza un vehículo existente")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<VehiculoResponseDTO>> updateVehiculo(
             @Parameter(description = "ID del vehículo") @PathVariable Long id,
             @Valid @RequestBody VehiculoUpdateDTO request) {
@@ -78,7 +78,7 @@ public class VehiculoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar vehículo", description = "Elimina un vehículo del sistema")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<Void>> deleteVehiculo(
             @Parameter(description = "ID del vehículo") @PathVariable Long id) {
         vehiculoUseCase.deleteById(id);

@@ -49,6 +49,11 @@ public class ProductoRepositoryAdapter implements ProductoRepositoryPort {
     }
 
     @Override
+    public List<Producto> findBySedeId(Long sedeId) {
+        return productoRepository.findByInventarios_SedeId(sedeId);
+    }
+
+    @Override
     public Producto save(Producto producto) {
         return productoRepository.save(producto);
     }

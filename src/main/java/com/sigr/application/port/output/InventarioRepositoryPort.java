@@ -24,6 +24,8 @@ public interface InventarioRepositoryPort {
 
     List<Inventario> findByProductoId(Long productoId);
 
+    List<Inventario> findByProductoIdWithStock(Long productoId);
+
     List<Inventario> findByLowStock(Integer cantidad);
 
     List<Inventario> findBySedeIdAndLowStock(Long sedeId, Integer cantidad);

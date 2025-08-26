@@ -22,6 +22,8 @@ public interface ProductoRepositoryPort {
 
     List<Producto> findByCategoriaId(Long categoriaId);
 
+    List<Producto> findBySedeId(Long sedeId);
+
     Producto save(Producto producto);
 
     void deleteById(Long id);

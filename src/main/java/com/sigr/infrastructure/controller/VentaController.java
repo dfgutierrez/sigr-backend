@@ -109,7 +109,7 @@ public class VentaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Anular venta", description = "Anula una venta del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<Void>> deleteVenta(
             @Parameter(description = "ID de la venta") @PathVariable Long id) {
         ventaUseCase.anularVenta(id);

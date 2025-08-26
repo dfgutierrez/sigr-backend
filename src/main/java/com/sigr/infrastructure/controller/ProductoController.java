@@ -33,15 +33,16 @@ public class ProductoController {
     private final ProductoUseCase productoUseCase;
 
     @GetMapping
-    @Operation(summary = "Obtener todos los productos", description = "Retorna una lista de todos los productos")
+    @Operation(summary = "Obtener todos los productos", description = "Retorna una lista de todos los productos o de una sede específica")
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
     @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
-    public ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> getAllProductos() {
-        List<ProductoResponseDTO> productos = productoUseCase.findAll();
+    public ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> getAllProductos(
+            @Parameter(description = "ID de la sede (opcional)") @RequestParam(required = false) Long sedeId) {
+        List<ProductoResponseDTO> productos = productoUseCase.findAll(sedeId);
         return ResponseEntity.ok(ApiResponse.success(productos));
     }
 
@@ -95,7 +96,7 @@ public class ProductoController {
         summary = "Crear nuevo producto con inventario inicial", 
         description = "Crea un nuevo producto en el sistema y automáticamente crea su inventario inicial en la sede especificada"
     )
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<ProductoResponseDTO>> createProducto(
             @Valid @RequestBody ProductoRequestDTO request) {
         ProductoResponseDTO producto = productoUseCase.create(request);
@@ -105,7 +106,7 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar producto", description = "Actualiza un producto existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<ProductoResponseDTO>> updateProducto(
             @Parameter(description = "ID del producto") @PathVariable Long id,
             @Valid @RequestBody ProductoUpdateDTO request) {
@@ -115,7 +116,7 @@ public class ProductoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar producto", description = "Elimina un producto del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') ")
     public ResponseEntity<ApiResponse<Void>> deleteProducto(
             @Parameter(description = "ID del producto") @PathVariable Long id) {
         productoUseCase.deleteById(id);

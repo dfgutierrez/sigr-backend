@@ -73,7 +73,7 @@ public class CategoriaController {
 
     @PostMapping
     @Operation(summary = "Crear nueva categoría", description = "Crea una nueva categoría en el sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<CategoriaResponseDTO>> createCategoria(
             @Valid @RequestBody CategoriaRequestDTO request) {
         CategoriaResponseDTO categoria = categoriaUseCase.create(request);
@@ -82,7 +82,7 @@ public class CategoriaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar categoría", description = "Actualiza una categoría existente")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<CategoriaResponseDTO>> updateCategoria(
             @Parameter(description = "ID de la categoría") @PathVariable Long id,
             @Valid @RequestBody CategoriaUpdateDTO request) {
@@ -92,7 +92,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar categoría", description = "Elimina una categoría del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
     public ResponseEntity<ApiResponse<Void>> deleteCategoria(
             @Parameter(description = "ID de la categoría") @PathVariable Long id) {
         categoriaUseCase.deleteById(id);

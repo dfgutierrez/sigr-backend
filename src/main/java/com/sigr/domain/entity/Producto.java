@@ -37,4 +37,9 @@ public class Producto {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Categoria categoria;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "marca_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Marca marca;
+
 }

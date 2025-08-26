@@ -21,6 +21,9 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByCategoriaId(Long categoriaId);
 
+    @Query("SELECT DISTINCT p FROM Producto p JOIN Inventario i ON p.id = i.producto.id WHERE i.sede.id = :sedeId AND i.cantidad > 0")
+    List<Producto> findByInventarios_SedeId(@Param("sedeId") Long sedeId);
+
     @Query("""
         SELECT new com.sigr.application.dto.producto.ProductoConStockDTO(
             p.id, p.codigoBarra, p.nombre, p.descripcion, p.precioCompra, p.precioVenta,

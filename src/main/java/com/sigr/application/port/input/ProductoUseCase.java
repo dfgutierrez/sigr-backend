@@ -13,6 +13,8 @@ public interface ProductoUseCase {
 
     List<ProductoResponseDTO> findAll();
 
+    List<ProductoResponseDTO> findAll(Long sedeId);
+
     Page<ProductoResponseDTO> findAllPaginated(Pageable pageable);
 
     ProductoResponseDTO findById(Long id);

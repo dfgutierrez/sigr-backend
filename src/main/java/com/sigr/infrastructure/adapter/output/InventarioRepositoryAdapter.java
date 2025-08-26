@@ -51,6 +51,11 @@ public class InventarioRepositoryAdapter implements InventarioRepositoryPort {
     }
 
     @Override
+    public List<Inventario> findByProductoIdWithStock(Long productoId) {
+        return inventarioRepository.findByProductoIdAndCantidadGreaterThan(productoId, 0);
+    }
+
+    @Override
     public List<Inventario> findByLowStock(Integer cantidad) {
         return inventarioRepository.findByLowStock(cantidad);
     }

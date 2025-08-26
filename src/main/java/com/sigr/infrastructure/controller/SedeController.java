@@ -37,7 +37,7 @@ public class SedeController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autorizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'MECANICO', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VENDEDOR', 'SUPERVISOR')")
     public ResponseEntity<ApiResponse<List<SedeResponseDTO>>> getAllSedes() {
         List<SedeResponseDTO> sedes = sedeUseCase.findAll();
         return ResponseEntity.ok(ApiResponse.success(sedes));
@@ -45,7 +45,7 @@ public class SedeController {
 
     @GetMapping("/paginated")
     @Operation(summary = "Obtener sedes paginadas", description = "Retorna una página de sedes")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MECANICO', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'SUPERVISOR')")
     public ResponseEntity<ApiResponse<PagedResponse<SedeResponseDTO>>> getAllSedesPaginated(Pageable pageable) {
         Page<SedeResponseDTO> sedesPage = sedeUseCase.findAllPaginated(pageable);
         PagedResponse<SedeResponseDTO> pagedResponse = PagedResponse.of(sedesPage);
@@ -54,7 +54,7 @@ public class SedeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener sede por ID", description = "Retorna una sede específica por su ID")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'MECANICO', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VENDEDOR', 'SUPERVISOR')")
     public ResponseEntity<ApiResponse<SedeResponseDTO>> getSedeById(
             @Parameter(description = "ID de la sede") @PathVariable Long id) {
         SedeResponseDTO sede = sedeUseCase.findById(id);
@@ -91,7 +91,7 @@ public class SedeController {
 
     @GetMapping("/exists")
     @Operation(summary = "Verificar si existe una sede", description = "Verifica si existe una sede con el nombre especificado")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<Boolean>> existsByNombre(
             @Parameter(description = "Nombre de la sede") @RequestParam String nombre) {
         boolean exists = sedeUseCase.existsByNombre(nombre);
@@ -100,7 +100,7 @@ public class SedeController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar sedes por nombre", description = "Busca sedes que contengan el texto especificado en el nombre")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'SUPERVISOR','VENDEDOR')")
     public ResponseEntity<ApiResponse<List<SedeResponseDTO>>> searchSedesByNombre(
             @Parameter(description = "Texto a buscar en el nombre") @RequestParam String nombre) {
         List<SedeResponseDTO> sedes = sedeUseCase.findByNombreContaining(nombre);
