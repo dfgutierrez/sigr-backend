@@ -1,6 +1,5 @@
 package com.sigr.application.dto.venta;
 
-import com.sigr.application.dto.producto.ProductoResponseDTO;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -9,8 +8,8 @@ import java.math.BigDecimal;
 public class DetalleVentaResponseDTO {
 
     private Long id;
-    private ProductoResponseDTO producto;
     private Long productoId;
+    private String productoNombre;
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;

@@ -40,6 +40,7 @@ public class VentaServiceImpl implements VentaUseCase {
     @Override
     @Transactional
     public VentaResponseDTO crearVenta(VentaRequestDTO ventaRequestDTO) {
+        System.out.println("=== DEBUG: Iniciando crearVenta ===");
         // Validar sede
         Sede sede = sedeRepositoryPort.findById(ventaRequestDTO.getSedeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sede no encontrada"));
@@ -86,24 +87,26 @@ public class VentaServiceImpl implements VentaUseCase {
             totalVenta = totalVenta.add(subtotal);
             
             // Actualizar inventario
+            int cantidadAntes = inventario.getCantidad();
             inventario.setCantidad(inventario.getCantidad() - detalle.getCantidad());
+            System.out.println("DEBUG: Producto " + detalle.getProductoId() + 
+                " - Stock antes: " + cantidadAntes + 
+                " - Descontando: " + detalle.getCantidad() + 
+                " - Stock después: " + inventario.getCantidad());
             inventarioRepositoryPort.save(inventario);
+            
+            // Crear detalle de venta para el cascade
+            DetalleVenta detalleVenta = new DetalleVenta();
+            detalleVenta.setVenta(venta);
+            detalleVenta.setProducto(producto);
+            detalleVenta.setCantidad(detalle.getCantidad());
+            detalleVenta.setPrecioUnitario(detalle.getPrecioUnitario());
+            
+            venta.getDetalles().add(detalleVenta);
         }
         
         venta.setTotal(totalVenta);
         Venta ventaGuardada = ventaRepositoryPort.save(venta);
-        
-        // Guardar detalles de venta
-        for (DetalleVentaRequestDTO detalle : ventaRequestDTO.getDetalles()) {
-            DetalleVenta detalleVenta = new DetalleVenta();
-            detalleVenta.setVenta(ventaGuardada);
-            detalleVenta.setProducto(productoRepositoryPort.findById(detalle.getProductoId()).get());
-            detalleVenta.setCantidad(detalle.getCantidad());
-            detalleVenta.setPrecioUnitario(detalle.getPrecioUnitario());
-            // DetalleVenta no tiene campo subtotal - se calcula en el DTO
-            
-            detalleVentaRepositoryPort.save(detalleVenta);
-        }
         
         return mapToResponseDTO(ventaGuardada);
     }
@@ -239,6 +242,7 @@ public class VentaServiceImpl implements VentaUseCase {
         DetalleVentaResponseDTO dto = new DetalleVentaResponseDTO();
         dto.setId(detalle.getId());
         dto.setProductoId(detalle.getProducto().getId());
+        dto.setProductoNombre(detalle.getProducto().getNombre());
         dto.setCantidad(detalle.getCantidad());
         dto.setPrecioUnitario(detalle.getPrecioUnitario());
         // Calcular el subtotal
