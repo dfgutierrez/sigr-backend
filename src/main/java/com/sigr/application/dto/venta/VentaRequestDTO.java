@@ -17,6 +17,9 @@ public class VentaRequestDTO {
     // usuarioId es opcional - si no se proporciona, se usará el primer usuario activo de la sede
     private Long usuarioId;
 
+    // vehiculoId es opcional - puede ser null si no se asigna vehículo específico
+    private Long vehiculoId;
+
     // fechaEntrega es opcional - puede ser null
     private LocalDateTime fechaEntrega;
 

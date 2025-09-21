@@ -29,6 +29,7 @@ public class VehiculoMapper {
                 .modelo(vehiculo.getModelo())
                 .nombreConductor(vehiculo.getNombreConductor())
                 .documento(vehiculo.getDocumento())
+                .celular(vehiculo.getCelular())
                 .km(vehiculo.getKm())
                 .sigla(vehiculo.getSigla())
                 .fecha(vehiculo.getFecha())
@@ -55,6 +56,7 @@ public class VehiculoMapper {
         vehiculo.setModelo(requestDTO.getModelo());
         vehiculo.setNombreConductor(requestDTO.getNombreConductor());
         vehiculo.setDocumento(requestDTO.getDocumento());
+        vehiculo.setCelular(requestDTO.getCelular());
         vehiculo.setKm(requestDTO.getKm());
         vehiculo.setSigla(requestDTO.getSigla());
 
@@ -67,6 +69,7 @@ public class VehiculoMapper {
         vehiculo.setModelo(requestDTO.getModelo());
         vehiculo.setNombreConductor(requestDTO.getNombreConductor());
         vehiculo.setDocumento(requestDTO.getDocumento());
+        vehiculo.setCelular(requestDTO.getCelular());
         vehiculo.setKm(requestDTO.getKm());
         vehiculo.setSigla(requestDTO.getSigla());
     }
@@ -86,6 +89,9 @@ public class VehiculoMapper {
         }
         if (updateDTO.getDocumento() != null) {
             vehiculo.setDocumento(updateDTO.getDocumento());
+        }
+        if (updateDTO.getCelular() != null) {
+            vehiculo.setCelular(updateDTO.getCelular());
         }
         if (updateDTO.getKm() != null) {
             vehiculo.setKm(updateDTO.getKm());

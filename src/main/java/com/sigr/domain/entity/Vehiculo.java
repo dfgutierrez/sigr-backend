@@ -38,6 +38,9 @@ public class Vehiculo {
     @Column(name = "documento", length = 50)
     private String documento;
 
+    @Column(name = "celular", length = 15)
+    private String celular;
+
     @Column(name = "km")
     private Integer km;
 

@@ -40,6 +40,9 @@ public class VehiculoResponseDTO {
     @Schema(description = "Documento del conductor", example = "12345678")
     private String documento;
 
+    @Schema(description = "Celular del conductor", example = "3001234567")
+    private String celular;
+
     @Schema(description = "Kilómetros del vehículo", example = "50000")
     private Integer km;
 

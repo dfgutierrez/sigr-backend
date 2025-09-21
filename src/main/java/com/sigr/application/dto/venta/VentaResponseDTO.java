@@ -2,6 +2,7 @@ package com.sigr.application.dto.venta;
 
 import com.sigr.application.dto.sede.SedeResponseDTO;
 import com.sigr.application.dto.usuario.UsuarioResponseDTO;
+import com.sigr.application.dto.vehiculo.VehiculoResponseDTO;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -20,6 +21,9 @@ public class VentaResponseDTO {
     private SedeResponseDTO sede;
     private Long sedeId;
     private String sedeNombre;
+    private VehiculoResponseDTO vehiculo;
+    private Long vehiculoId;
+    private String vehiculoPlaca;
     private BigDecimal total;
     private Boolean estado;
     private List<DetalleVentaResponseDTO> detalles;

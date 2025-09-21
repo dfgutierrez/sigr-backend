@@ -33,6 +33,11 @@ public class Venta {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Sede sede;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehiculo_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Vehiculo vehiculo;
+
     @Column(name = "fecha_entrega", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fechaEntrega;
 

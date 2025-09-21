@@ -11,6 +11,8 @@ import com.sigr.application.port.output.InventarioRepositoryPort;
 import com.sigr.application.port.output.ProductoRepositoryPort;
 import com.sigr.application.port.output.UsuarioRepositoryPort;
 import com.sigr.application.port.output.SedeRepositoryPort;
+import com.sigr.application.port.output.VehiculoRepositoryPort;
+import com.sigr.application.mapper.VehiculoMapper;
 import com.sigr.domain.entity.*;
 import com.sigr.domain.exception.ResourceNotFoundException;
 import com.sigr.domain.exception.BusinessException;
@@ -36,6 +38,8 @@ public class VentaServiceImpl implements VentaUseCase {
     // Eliminado clienteRepositoryPort
     private final UsuarioRepositoryPort usuarioRepositoryPort;
     private final SedeRepositoryPort sedeRepositoryPort;
+    private final VehiculoRepositoryPort vehiculoRepositoryPort;
+    private final VehiculoMapper vehiculoMapper;
 
     @Override
     @Transactional
@@ -59,10 +63,18 @@ public class VentaServiceImpl implements VentaUseCase {
             usuario = usuariosActivos.get(0);
         }
 
+        // Obtener vehículo si se proporciona
+        Vehiculo vehiculo = null;
+        if (ventaRequestDTO.getVehiculoId() != null) {
+            vehiculo = vehiculoRepositoryPort.findById(ventaRequestDTO.getVehiculoId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Vehículo no encontrado"));
+        }
+
         // Crear venta
         Venta venta = new Venta();
         venta.setUsuario(usuario);
         venta.setSede(sede);
+        venta.setVehiculo(vehiculo);
         venta.setFechaEntrega(ventaRequestDTO.getFechaEntrega());
         venta.setEstado(true);
         
@@ -225,6 +237,14 @@ public class VentaServiceImpl implements VentaUseCase {
         dto.setUsuarioNombre(venta.getUsuario().getNombreCompleto());
         dto.setSedeId(venta.getSede().getId());
         dto.setSedeNombre(venta.getSede().getNombre());
+        
+        // Mapear información del vehículo si existe
+        if (venta.getVehiculo() != null) {
+            dto.setVehiculo(vehiculoMapper.toResponseDTO(venta.getVehiculo()));
+            dto.setVehiculoId(venta.getVehiculo().getId());
+            dto.setVehiculoPlaca(venta.getVehiculo().getPlaca());
+        }
+        
         dto.setTotal(venta.getTotal());
         dto.setEstado(venta.getEstado());
         

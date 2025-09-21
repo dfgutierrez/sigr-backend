@@ -44,6 +44,10 @@ public class VehiculoRequestDTO {
     @Schema(description = "Documento del conductor", example = "12345678")
     private String documento;
 
+    @Size(max = 15, message = "El celular no puede exceder 15 caracteres")
+    @Schema(description = "Celular del conductor", example = "3001234567")
+    private String celular;
+
     @Schema(description = "Kilómetros del vehículo", example = "50000")
     private Integer km;
 
