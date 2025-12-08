@@ -23,11 +23,9 @@ public class ProductoRequestDTO {
     @Size(max = 500, message = "La descripción no puede exceder 500 caracteres")
     private String descripcion;
 
-    @NotNull(message = "El precio de compra es obligatorio")
     @DecimalMin(value = "0.01", message = "El precio de compra debe ser mayor a 0")
     private BigDecimal precioCompra;
 
-    @NotNull(message = "El precio de venta es obligatorio")
     @DecimalMin(value = "0.01", message = "El precio de venta debe ser mayor a 0")
     private BigDecimal precioVenta;
 

@@ -26,5 +26,6 @@ public class VentaResponseDTO {
     private String vehiculoPlaca;
     private BigDecimal total;
     private Boolean estado;
+    private String descripcion;
     private List<DetalleVentaResponseDTO> detalles;
 }

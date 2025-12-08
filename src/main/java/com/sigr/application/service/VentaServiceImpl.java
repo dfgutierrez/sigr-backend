@@ -2,6 +2,7 @@ package com.sigr.application.service;
 
 import com.sigr.application.dto.venta.VentaRequestDTO;
 import com.sigr.application.dto.venta.VentaResponseDTO;
+import com.sigr.application.dto.venta.VentaDescripcionDTO;
 import com.sigr.application.dto.venta.DetalleVentaRequestDTO;
 import com.sigr.application.dto.venta.DetalleVentaResponseDTO;
 import com.sigr.application.port.in.VentaUseCase;
@@ -228,6 +229,18 @@ public class VentaServiceImpl implements VentaUseCase {
         return mapToResponseDTO(ventaActualizada);
     }
 
+    @Override
+    @Transactional
+    public VentaResponseDTO actualizarDescripcion(Long id, VentaDescripcionDTO descripcionDTO) {
+        Venta venta = ventaRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada"));
+        
+        venta.setDescripcion(descripcionDTO.getDescripcion());
+        Venta ventaActualizada = ventaRepositoryPort.save(venta);
+        
+        return mapToResponseDTO(ventaActualizada);
+    }
+
     private VentaResponseDTO mapToResponseDTO(Venta venta) {
         VentaResponseDTO dto = new VentaResponseDTO();
         dto.setId(venta.getId());
@@ -247,6 +260,7 @@ public class VentaServiceImpl implements VentaUseCase {
         
         dto.setTotal(venta.getTotal());
         dto.setEstado(venta.getEstado());
+        dto.setDescripcion(venta.getDescripcion());
         
         // Obtener detalles
         List<DetalleVenta> detalles = detalleVentaRepositoryPort.findByVentaId(venta.getId());

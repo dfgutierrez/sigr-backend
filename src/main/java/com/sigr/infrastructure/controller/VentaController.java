@@ -2,6 +2,7 @@ package com.sigr.infrastructure.controller;
 
 import com.sigr.application.dto.venta.VentaRequestDTO;
 import com.sigr.application.dto.venta.VentaResponseDTO;
+import com.sigr.application.dto.venta.VentaDescripcionDTO;
 import com.sigr.application.port.in.VentaUseCase;
 import com.sigr.infrastructure.common.response.ApiResponse;
 import com.sigr.infrastructure.common.response.PagedResponse;
@@ -154,6 +155,16 @@ public class VentaController {
             @Parameter(description = "Nueva fecha de entrega", example = "2024-12-31T23:59:59")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaEntrega) {
         VentaResponseDTO venta = ventaUseCase.actualizarFechaEntrega(id, fechaEntrega);
+        return ResponseEntity.ok(ApiResponse.success(venta));
+    }
+
+    @PatchMapping("/{id}/descripcion")
+    @Operation(summary = "Actualizar descripción de venta", description = "Actualiza la descripción de una venta")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('VENDEDOR') or hasRole('SUPERVISOR')")
+    public ResponseEntity<ApiResponse<VentaResponseDTO>> actualizarDescripcion(
+            @Parameter(description = "ID de la venta") @PathVariable Long id,
+            @Valid @RequestBody VentaDescripcionDTO descripcionDTO) {
+        VentaResponseDTO venta = ventaUseCase.actualizarDescripcion(id, descripcionDTO);
         return ResponseEntity.ok(ApiResponse.success(venta));
     }
 }

@@ -18,6 +18,6 @@ public class DetalleVentaRequestDTO {
     private Integer cantidad;
 
     @NotNull(message = "El precio unitario es obligatorio")
-    @DecimalMin(value = "0.01", message = "El precio unitario debe ser mayor a 0")
+    @DecimalMin(value = "0.00", message = "El precio unitario debe ser mayor o igual a 0")
     private BigDecimal precioUnitario;
 }

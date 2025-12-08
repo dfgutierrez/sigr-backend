@@ -2,6 +2,7 @@ package com.sigr.application.port.in;
 
 import com.sigr.application.dto.venta.VentaRequestDTO;
 import com.sigr.application.dto.venta.VentaResponseDTO;
+import com.sigr.application.dto.venta.VentaDescripcionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -35,4 +36,6 @@ public interface VentaUseCase {
     Page<VentaResponseDTO> obtenerVentasPendientesPorEntregarPorSede(Long sedeId, Pageable pageable);
     
     VentaResponseDTO actualizarFechaEntrega(Long id, LocalDateTime nuevaFechaEntrega);
+    
+    VentaResponseDTO actualizarDescripcion(Long id, VentaDescripcionDTO descripcionDTO);
 }

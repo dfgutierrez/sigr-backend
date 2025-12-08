@@ -47,6 +47,9 @@ public class Venta {
     @Column(name = "estado")
     private Boolean estado;
 
+    @Column(name = "descripcion")
+    private String descripcion;
+
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DetalleVenta> detalles = new ArrayList<>();
 
