@@ -32,6 +32,8 @@ public class ProductoRequestDTO {
     private Long categoriaId;
 
     private Long marcaId;
+
+    private Long proveedorId;
     
     // Campos para inventario inicial
     @NotNull(message = "La sede es obligatoria")

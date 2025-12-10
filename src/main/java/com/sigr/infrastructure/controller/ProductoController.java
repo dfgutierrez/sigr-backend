@@ -116,7 +116,7 @@ public class ProductoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar producto", description = "Elimina un producto del sistema")
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') ")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('SUPERVISOR') or hasRole('VENDEDOR')")
     public ResponseEntity<ApiResponse<Void>> deleteProducto(
             @Parameter(description = "ID del producto") @PathVariable Long id) {
         productoUseCase.deleteById(id);

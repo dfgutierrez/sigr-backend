@@ -31,4 +31,8 @@ public class ProductoUpdateDTO {
     private BigDecimal precioVenta;
 
     private Long categoriaId;
+
+    private Long marcaId;
+
+    private Long proveedorId;
 }

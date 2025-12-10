@@ -7,11 +7,15 @@ import com.sigr.application.dto.producto.ProductoConStockDTO;
 import com.sigr.application.mapper.ProductoMapper;
 import com.sigr.application.port.input.ProductoUseCase;
 import com.sigr.application.port.output.CategoriaRepositoryPort;
+import com.sigr.application.port.output.MarcaRepositoryPort;
 import com.sigr.application.port.output.ProductoRepositoryPort;
+import com.sigr.application.port.output.ProveedorRepositoryPort;
 import com.sigr.application.port.output.InventarioRepositoryPort;
 import com.sigr.application.port.output.SedeRepositoryPort;
 import com.sigr.domain.entity.Categoria;
+import com.sigr.domain.entity.Marca;
 import com.sigr.domain.entity.Producto;
+import com.sigr.domain.entity.Proveedor;
 import com.sigr.domain.entity.Inventario;
 import com.sigr.domain.entity.Sede;
 import com.sigr.domain.exception.BusinessException;
@@ -34,6 +38,8 @@ public class ProductoServiceImpl implements ProductoUseCase {
 
     private final ProductoRepositoryPort productoRepositoryPort;
     private final CategoriaRepositoryPort categoriaRepositoryPort;
+    private final MarcaRepositoryPort marcaRepositoryPort;
+    private final ProveedorRepositoryPort proveedorRepositoryPort;
     private final InventarioRepositoryPort inventarioRepositoryPort;
     private final SedeRepositoryPort sedeRepositoryPort;
     private final ProductoMapper productoMapper;
@@ -132,6 +138,18 @@ public class ProductoServiceImpl implements ProductoUseCase {
                     .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + request.getCategoriaId()));
             producto.setCategoria(categoria);
         }
+        
+        if (request.getMarcaId() != null) {
+            Marca marca = marcaRepositoryPort.findById(request.getMarcaId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Marca no encontrada con ID: " + request.getMarcaId()));
+            producto.setMarca(marca);
+        }
+        
+        if (request.getProveedorId() != null) {
+            Proveedor proveedor = proveedorRepositoryPort.findById(request.getProveedorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con ID: " + request.getProveedorId()));
+            producto.setProveedor(proveedor);
+        }
 
         Producto savedProducto = productoRepositoryPort.save(producto);
         
@@ -166,6 +184,18 @@ public class ProductoServiceImpl implements ProductoUseCase {
                     .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + request.getCategoriaId()));
             existingProducto.setCategoria(categoria);
         }
+        
+        if (request.getMarcaId() != null) {
+            Marca marca = marcaRepositoryPort.findById(request.getMarcaId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Marca no encontrada con ID: " + request.getMarcaId()));
+            existingProducto.setMarca(marca);
+        }
+        
+        if (request.getProveedorId() != null) {
+            Proveedor proveedor = proveedorRepositoryPort.findById(request.getProveedorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con ID: " + request.getProveedorId()));
+            existingProducto.setProveedor(proveedor);
+        }
 
         Producto updatedProducto = productoRepositoryPort.save(existingProducto);
         log.info("Producto updated successfully with id: {}", updatedProducto.getId());
@@ -179,6 +209,16 @@ public class ProductoServiceImpl implements ProductoUseCase {
 
         if (!productoRepositoryPort.existsById(id)) {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + id);
+        }
+
+        // Verificar si el producto tiene inventario asociado
+        List<Inventario> inventarios = inventarioRepositoryPort.findByProductoId(id);
+        if (!inventarios.isEmpty()) {
+            long totalStock = inventarios.stream()
+                    .mapToLong(Inventario::getCantidad)
+                    .sum();
+            throw new BusinessException("No se puede eliminar el producto porque tiene inventario asociado en " + 
+                    inventarios.size() + " sede(s) con un total de " + totalStock + " unidades en stock");
         }
 
         productoRepositoryPort.deleteById(id);
